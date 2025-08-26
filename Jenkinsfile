@@ -29,14 +29,20 @@ pipeline{
             }
 
         }
+
         stage("Tests"){
+            /* Executing Unit Test and E2E Test stages parallely as it will save time.
+            We focus on stages to run parallely which have no dependency on each other, 
+            their execution time difference must be less, also to ensure "fail fast". 
+            All these things are guidelines for efficient parallel stage execution.
+            */
             parallel{
-                    stage("Test"){
-                        agent {
-                            docker{
-                                image 'node:18-alpine'
-                                reuseNode true
-                            }
+                stage("Unit Test"){
+                    agent {
+                        docker{
+                            image 'node:18-alpine'
+                            reuseNode true
+                        }
                     }
                     steps{
                         sh '''
@@ -65,6 +71,22 @@ pipeline{
                 }
 
             }
+        }
+        stage("Deploy"){
+            agent{
+                docker{
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps{
+                sh '''
+                    npm install -g netlify-cli
+                    node_modules/.bin/netlify
+                    netlify --version
+                '''
+            }
+
         }
         
     }
