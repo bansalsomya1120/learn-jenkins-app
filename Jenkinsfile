@@ -96,6 +96,29 @@ pipeline{
             }
 
         }
+
+        stage("PROD E2E"){
+                    agent{
+                        docker{
+                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                            reuseNode true
+                        }
+                    environment{
+                        CI_ENVIRONMENT_URL = 'https://jazzy-belekoy-a627dd.netlify.app'
+    }
+
+                    }
+                    steps{
+                        sh '''
+                            npx playwright test
+                        '''
+                    }
+                    post{
+                        always{
+                            publishHTML([allowmissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Prod report', reportTitles: '', userWrappedFileDirectory: true])
+                        }
+                    }
+            }
         
     }
 }
