@@ -113,11 +113,11 @@ pipeline{
                             npx playwright test
                         '''
                     }
-                    post{
+                   /* post{
                         always{
                             publishHTML([allowmissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Prod report', reportTitles: '', userWrappedFileDirectory: true])
                         }
-                    }
+                    }*/
             }
         
     }
